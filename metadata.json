@@ -57,7 +57,7 @@
                 "Name[zh_TW]": "Archisha Up"
             }
         ],
-        "BugReportUrl": "https://bugs.kde.org/enter_bug.cgi?product=plasmashell&component=Analog%20Clock%20widget",
+        "BugReportUrl": "https://github.com/Archisha-Upadhyaya/plasma-clock-calendar/issues",
         "Category": "Date and Time",
         "Description": "A clock with hands",
         "Description[ar]": "ساعة بِعقارب",
@@ -117,9 +117,9 @@
             "desktop"
         ],
         "Icon": "preferences-system-time",
-        "Id": "org.kde.plasma.digitalclock.custom",
+        "Id": "com.github.archisha-upadhyaya.plasma-clock-calendar",
         "License": "GPL-2.0+",
-        "Name": "Digital Clock (Custom)",
+        "Name": "Clock+Calendar (Custom)",
         "Name[af]": "Analooghorlosie",
         "Name[ar]": "ساعة تناظرية",
         "Name[ast]": "Reló analóxicu",
@@ -207,7 +207,7 @@
         "Name[wa]": "Ôrlodje analodjike",
         "Name[zh_CN]": "模拟时钟",
         "Name[zh_TW]": "類比時鐘",
-        "Website": "https://userbase.kde.org/Plasma/Clocks"
+        "Website": "https://github.com/Archisha-Upadhyaya/plasma-clock-calendar"
     },
     "X-Plasma-API-Minimum-Version": "6.0",
     "X-Plasma-Provides": [
