@@ -1,5 +1,5 @@
 /*
-    SPDX-FileCopyrightText: 2025 Archisha <archisha@example.com>
+    SPDX-FileCopyrightText: 2025 Archisha <archishaupadhyaya10d@gmail.com>>
     SPDX-License-Identifier: GPL-2.0-or-later
 */
 

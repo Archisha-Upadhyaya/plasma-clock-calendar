@@ -2,7 +2,7 @@
     SPDX-FileCopyrightText: 2012 Viranch Mehta <viranch.mehta@gmail.com>
     SPDX-FileCopyrightText: 2012 Marco Martin <mart@kde.org>
     SPDX-FileCopyrightText: 2013 David Edmundson <davidedmundson@kde.org>
-
+    SPDX-FileCopyrightText: 2013 Archisha Up <archishaupadhyaya10d@gmail.com>
     SPDX-License-Identifier: LGPL-2.0-or-later
 */
 
@@ -84,40 +84,6 @@ PlasmoidItem {
             
             onPressed: representation.wasExpanded = analogclock.expanded
             onClicked: analogclock.expanded = !representation.wasExpanded
-            
-            onWheel: (wheel) => {
-                if (!Plasmoid.configuration.wheelChangesTimezone || Plasmoid.configuration.selectedTimeZones.length <= 1) {
-                    return;
-                }
-                
-                // Find current timezone index
-                var currentTz = Plasmoid.configuration.lastSelectedTimezone || "Local";
-                var tzList = Plasmoid.configuration.selectedTimeZones;
-                var currentIndex = tzList.indexOf(currentTz);
-                
-                if (currentIndex === -1) {
-                    currentIndex = tzList.indexOf("Local");
-                }
-                
-                // Change timezone based on wheel direction
-                if (wheel.angleDelta.y > 0) {
-                    // Wheel up - next timezone
-                    currentIndex = (currentIndex + 1) % tzList.length;
-                } else {
-                    // Wheel down - previous timezone
-                    currentIndex = currentIndex <= 0 ? tzList.length - 1 : currentIndex - 1;
-                }
-                
-                // Update the timezone
-                Plasmoid.configuration.lastSelectedTimezone = tzList[currentIndex];
-                
-                // Update data source to use new timezone
-                if (tzList[currentIndex] !== "Local") {
-                    dataSource.connectedSources = [tzList[currentIndex]];
-                } else {
-                    dataSource.connectedSources = ["Local"];
-                }
-            }
         }
 
         ColumnLayout {
@@ -157,7 +123,7 @@ PlasmoidItem {
                 
                 fontSizeMode: Text.Fit
                 minimumPixelSize: Kirigami.Theme.defaultFont.pixelSize
-                font.pixelSize: 72 // Max size
+                font.pixelSize: 85 // Max size
                 
                 Layout.preferredWidth: representation.width
                 Layout.preferredHeight: representation.height * 0.7
@@ -183,7 +149,7 @@ PlasmoidItem {
                     } else if (Plasmoid.configuration.dateFormat === "isoDate") {
                         return Qt.formatDate(date, Qt.ISODate);
                     } else if (Plasmoid.configuration.dateFormat === "longDate") {
-                        return Qt.formatDate(date, Qt.DefaultLocaleLongDate);
+                        return Qt.formatDate(date, "dddd, MMMM d, yyyy");
                     } else {
                         return Qt.formatDate(date, Qt.DefaultLocaleShortDate);
                     }
@@ -191,7 +157,7 @@ PlasmoidItem {
                 
                 fontSizeMode: Text.Fit
                 minimumPixelSize: Kirigami.Theme.smallFont.pixelSize
-                font.pixelSize: 36
+                font.pixelSize: 44
                 
                 Layout.preferredWidth: representation.width
                 Layout.preferredHeight: representation.height * 0.3
