@@ -19,9 +19,4 @@ ConfigModel {
         icon: "view-calendar-month"
         source: "configCalendar.qml"
     }
-    ConfigCategory {
-        name: i18n("Time Zones")
-        icon: "globe"
-        source: "org.kde.plasma.configuration.timezones"
-    }
 }

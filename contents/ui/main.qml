@@ -37,29 +37,30 @@ PlasmoidItem {
     Plasmoid.backgroundHints: "NoBackground";
     preferredRepresentation: compactRepresentation
 
-    toolTipMainText: Qt.locale().toString(dataSource.data["Local"]["DateTime"],"dddd")
-    toolTipSubText: `${currentTime}\n${currentDate}`
-
-
-    function dateTimeChanged() {
-        var currentTZOffset = dataSource.data["Local"]["Offset"] / 60;
-        if (currentTZOffset !== tzOffset) {
-            tzOffset = currentTZOffset;
-            Date.timeZoneUpdated(); // inform the QML JS engine about TZ change
-        }
+    toolTipMainText: {
+        var currentSource = Plasmoid.configuration.lastSelectedTimezone || "Local";
+        return Qt.locale().toString(dataSource.data[currentSource]["DateTime"],"dddd");
     }
+    toolTipSubText: `${currentTime}\n${currentDate}`
 
     P5Support.DataSource {
         id: dataSource
         engine: "time"
-        connectedSources: "Local"
+        connectedSources: Plasmoid.configuration.lastSelectedTimezone || "Local"
         interval: (showSeconds === 2) || (analogclock.compactRepresentationItem && analogclock.compactRepresentationItem.containsMouse) ? 1000 : 30000
         onDataChanged: {
-            var date = new Date(data["Local"]["DateTime"]);
+            var currentSource = Plasmoid.configuration.lastSelectedTimezone || "Local";
+            var date = new Date(data[currentSource]["DateTime"]);
             analogclock.currentDateTime = date;
             hours = date.getHours();
             minutes = date.getMinutes();
             seconds = date.getSeconds();
+            
+            var currentTZOffset = data[currentSource]["Offset"] / 60;
+            if (currentTZOffset !== tzOffset) {
+                tzOffset = currentTZOffset;
+                Date.timeZoneUpdated(); // inform the QML JS engine about TZ change
+            }
         }
         Component.onCompleted: {
             dataChanged();
@@ -83,6 +84,40 @@ PlasmoidItem {
             
             onPressed: representation.wasExpanded = analogclock.expanded
             onClicked: analogclock.expanded = !representation.wasExpanded
+            
+            onWheel: (wheel) => {
+                if (!Plasmoid.configuration.wheelChangesTimezone || Plasmoid.configuration.selectedTimeZones.length <= 1) {
+                    return;
+                }
+                
+                // Find current timezone index
+                var currentTz = Plasmoid.configuration.lastSelectedTimezone || "Local";
+                var tzList = Plasmoid.configuration.selectedTimeZones;
+                var currentIndex = tzList.indexOf(currentTz);
+                
+                if (currentIndex === -1) {
+                    currentIndex = tzList.indexOf("Local");
+                }
+                
+                // Change timezone based on wheel direction
+                if (wheel.angleDelta.y > 0) {
+                    // Wheel up - next timezone
+                    currentIndex = (currentIndex + 1) % tzList.length;
+                } else {
+                    // Wheel down - previous timezone
+                    currentIndex = currentIndex <= 0 ? tzList.length - 1 : currentIndex - 1;
+                }
+                
+                // Update the timezone
+                Plasmoid.configuration.lastSelectedTimezone = tzList[currentIndex];
+                
+                // Update data source to use new timezone
+                if (tzList[currentIndex] !== "Local") {
+                    dataSource.connectedSources = [tzList[currentIndex]];
+                } else {
+                    dataSource.connectedSources = ["Local"];
+                }
+            }
         }
 
         ColumnLayout {
@@ -200,6 +235,5 @@ PlasmoidItem {
 
     Component.onCompleted: {
         tzOffset = new Date().getTimezoneOffset();
-        dataSource.onDataChanged.connect(dateTimeChanged);
     }
 }

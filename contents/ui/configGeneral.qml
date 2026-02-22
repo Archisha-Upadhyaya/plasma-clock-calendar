@@ -15,20 +15,22 @@ KCM.SimpleKCM {
     property alias cfg_showDate: showDateCheckBox.checked
     property alias cfg_dateDisplayFormat: dateDisplayFormatCombo.currentIndex
     property alias cfg_showSeconds: showSecondsCombo.currentIndex
-    property alias cfg_showLocalTimezone: alwaysShowTimezoneRadio.checked
+    property alias cfg_showLocalTimezone: showLocalTimezoneCheck.checked
     property alias cfg_displayTimezoneFormat: displayTimezoneFormatCombo.currentIndex
     property alias cfg_use24hFormat: timeDisplayCombo.currentIndex
     property alias cfg_dateFormat: dateFormatCombo.currentValue
     property alias cfg_customDateFormat: customDateFormatField.text
     property alias cfg_autoFontAndSize: automaticRadio.checked
+    property alias cfg_wheelChangesTimezone: wheelChangesTimezoneCheck.checked
 
     Kirigami.FormLayout {
         RowLayout {
-            Kirigami.FormData.label: i18n("Information:")
-            CheckBox {
-                id: showDateCheckBox
-                text: i18n("Show date")
+            Kirigami.FormData.label: i18n("About:")
+            Label {
+                text: i18n("Enhanced Analog Clock - Custom version with dual-mode display and calendar integration")
+                wrapMode: Text.WordWrap
             }
+        }
             ComboBox {
                 id: dateDisplayFormatCombo
                 enabled: showDateCheckBox.checked
@@ -50,27 +52,15 @@ KCM.SimpleKCM {
             ]
         }
 
-        ColumnLayout {
-            Kirigami.FormData.label: i18n("Show time zone:")
-            ButtonGroup {
-                id: showLocalTimezoneGroup
-            }
-            RadioButton {
-                text: i18n("Only when different from local time zone")
-                checked: !page.cfg_showLocalTimezone
-                ButtonGroup.group: showLocalTimezoneGroup
-            }
-            RadioButton {
-                id: alwaysShowTimezoneRadio
-                text: i18n("Always")
-                ButtonGroup.group: showLocalTimezoneGroup
-            }
-        }
-
-        RowLayout {
+        ComboBox {
+            id: displayTimezoneFormatCombo
             Kirigami.FormData.label: i18n("Display time zone as:")
-            ComboBox {
-                id: displayTimezoneFormatCombo
+            model: [
+                i18n("Code (GMT)"),
+                i18n("Full text (London)"),
+                i18n("UTC offset (+1)")
+            ]
+        }
                 model: [
                     i18n("Code"),
                     i18n("Full text"),
@@ -120,6 +110,12 @@ KCM.SimpleKCM {
                 placeholderText: i18n("Custom format string")
             }
             Label {
+                visible: dateFormatCombo.currentValue === "custom"
+                text: i18n("Use: dd=day, MM=month, yyyy=year, MMM=month name")
+                font.italic: true
+                opacity: 0.7
+            }
+            Label {
                 text: {
                     var date = new Date();
                     if (dateFormatCombo.currentValue === "custom") {
@@ -163,6 +159,30 @@ KCM.SimpleKCM {
                     enabled: !automaticRadio.checked
                 }
             }
+        }
+
+        CheckBox {
+            id: wheelChangesTimezoneCheck
+            Kirigami.FormData.label: i18n("Mouse wheel:")
+            text: i18n("Use mouse wheel to switch time zones")
+            property alias cfg_wheelChangesTimezone: wheelChangesTimezoneCheck.checked
+        }
+
+        ComboBox {
+            id: displayTimezoneFormatCombo
+            Kirigami.FormData.label: i18n("Timezone display:")
+            model: [
+                i18n("Code (GMT)"),
+                i18n("Full text (London)"),
+                i18n("UTC offset (+1)")
+            ]
+            property alias cfg_displayTimezoneFormat: displayTimezoneFormatCombo.currentIndex
+        }
+
+        CheckBox {
+            id: showLocalTimezoneCheck
+            text: i18n("Show local timezone")
+            property alias cfg_showLocalTimezone: showLocalTimezoneCheck.checked
         }
     }
 }
